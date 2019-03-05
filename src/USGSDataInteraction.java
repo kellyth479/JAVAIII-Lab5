@@ -13,6 +13,8 @@ public class USGSDataInteraction {
         USGSDataView view = new USGSDataView();
         USGSDataController controller = new USGSDataController(model, view);
 
+        controller.inputLoop();
+
     }
 
 }
@@ -24,16 +26,16 @@ class USGSDataModel{
 		private USGSDatabase db;
 		private Connection conn;
 
+    public USGSDataModel(){
+        this.db = new USGSDatabase();
+        this.connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=master;user=sa;password=yourStrong(!)Password";
+        this.conn = db.getConnection(connectionUrl);
+    }
+
     public static USGSDataModel loadUSGSModel(){
         return new USGSDataModel();
     }
 
-    public USGSDataModel(){
-        this.conn = db.getConnection(connectionUrl);
-        this.connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=master;user=sa;password=yourStrong(!)Password";
-        this.db = new USGSDatabase();
-    }
-	
 	public StringBuffer showData(String sql) {
 		
 		ResultSet rs = db.showData(conn, sql);
@@ -71,57 +73,57 @@ class USGSDataView {
 		
 	}
 	
-public void displayMenu(){
-	
-	StringBuilder menu = new StringBuilder();
-	
-	  menu.append("==================\n");
-      System.out.println("		Menu		\n");
-      System.out.println("==================\n");
-      System.out.println("1. Search data?\n");
-      System.out.println("==================\n");
-      System.out.println("2. Delete data?\n");
-      System.out.println("==================\n");
-      System.out.println("3. Count any column\n");
-      System.out.println("===================\n");      
-      System.out.println("4. Quit\n");
-      System.out.println("==================\n");
-      
-      System.out.println(menu);
-}
+    public void displayMenu(){
+
+        StringBuilder menu = new StringBuilder();
+
+          menu.append("==================\n");
+          System.out.println("		Menu		\n");
+          System.out.println("==================\n");
+          System.out.println("1. Search data?\n");
+          System.out.println("==================\n");
+          System.out.println("2. Delete data?\n");
+          System.out.println("==================\n");
+          System.out.println("3. Count any column\n");
+          System.out.println("===================\n");
+          System.out.println("4. Quit\n");
+          System.out.println("==================\n");
+
+          System.out.println(menu);
+    }
 
 
-public void displayData() {
-	
-	StringBuffer showsql = new StringBuffer ("Select * from earthquake_data where ");
-	String latitude, longtitude, depth, mag;
-	latitude = handleRequest ("Please enter latitude: ");
-	if(!latitude.equals("")) {
-		showsql.append("latitude" + latitude);
-		
-	}
-	longtitude = handleRequest("Please enter longtitude: ");
-	if(!longtitude.equals("") && (!latitude.equals(""))) {
-		showsql.append("");
-	}
-	
-	
-	String rlong = handleRequest("Please enter longitiude: ");
-	String rlati = handleRequest("please enter latitiude: ");
-	String rdepth = handleRequest("Please enter depth: ");
-	String rmag	= handleRequest("Please enter mag: ");
-	
-	
-}	
+    public void displayData() {
+
+        StringBuffer showsql = new StringBuffer ("Select * from earthquake_data where ");
+        String latitude, longtitude, depth, mag;
+        latitude = handleRequest ("Please enter latitude: ");
+        if(!latitude.equals("")) {
+            showsql.append("latitude" + latitude);
+
+        }
+        longtitude = handleRequest("Please enter longtitude: ");
+        if(!longtitude.equals("") && (!latitude.equals(""))) {
+            showsql.append("");
+        }
 
 
-public String handleRequest (String question) {
-	System.out.println(question);
-	Scanner input = new Scanner (System.in);
-	String userInput = input.nextLine();
-	return userInput;
+        String rlong = handleRequest("Please enter longitiude: ");
+        String rlati = handleRequest("please enter latitiude: ");
+        String rdepth = handleRequest("Please enter depth: ");
+        String rmag	= handleRequest("Please enter mag: ");
 
-}
+
+    }
+
+
+    public String handleRequest (String question) {
+        System.out.println(question);
+        Scanner input = new Scanner (System.in);
+        String userInput = input.nextLine();
+        return userInput;
+
+    }
 }
 
 class USGSDataController {
