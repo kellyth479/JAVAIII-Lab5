@@ -5,13 +5,34 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+public class USGSDataInteraction {
+
+    public static void main (String []args) {
+
+        USGSDataModel model = USGSDataModel.loadUSGSModel();
+        USGSDataView view = new USGSDataView();
+        USGSDataController controller = new USGSDataController(model, view);
+
+    }
+
+}
+
+
 class USGSDataModel{
 	
-		String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=master;user=sa;password=yourStrong(!)Password";
-	
-		USGSDatabase db = new USGSDatabase();
+		private String connectionUrl;
+		private USGSDatabase db;
+		private Connection conn;
 
-		Connection conn = db.getConnection(connectionUrl);
+    public static USGSDataModel loadUSGSModel(){
+        return new USGSDataModel();
+    }
+
+    public USGSDataModel(){
+        this.conn = db.getConnection(connectionUrl);
+        this.connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=master;user=sa;password=yourStrong(!)Password";
+        this.db = new USGSDatabase();
+    }
 	
 	public StringBuffer showData(String sql) {
 		
@@ -42,7 +63,6 @@ class USGSDataModel{
 	public void countData(String sql) {
 		db.runSql(conn, sql);
 	}
-	
 
 }	
 
@@ -149,11 +169,4 @@ class USGSDataController {
 
 
 
-public class USGSDataInteraction {
-	
-	public static void main (String []args) {
-		
-		
-	}
 
-}
