@@ -27,3 +27,39 @@ WE CAN REPRESENT RANGE AND VALUE USING THE SAME STATEMENT
 
 
 1-1
+
+3
+
+If you are building the where/and clause(s) in your query based upon what what options the user selected then, 
+I'm guessing, that you already know what changes will have to be made to the query in order get the desired data. 
+If that is the case then you could create method that takes in the option the user asked for as a parameter to the method, 
+the method builds the query and returns that query.
+
+//something similar to the following
+public String buildQuery(int option){
+  StringBuilder sb = new StringBuilder();
+  sb.append("select fields from table");
+  switch(option){
+    case 1:
+     //build query and append to sb
+     sb.append("where clause for option1");
+    case 2:
+     //build query and append to sb
+     sb.append("where clause for option2");
+    default:
+    // build query using default
+    sb.append("default where clause");
+  }
+
+  return sb.toString();
+}
+// create the stored procedure
+PreparedStatement ps = conn.prepareStatement(buildQuery(2));
+ResultSet rs = ps.executeQuery();
+Now if you need to use specific user entered values in the query you can store them temporarily in a list or map and then set them.
+
+ps.setString(1,list.get(0));
+ps.setString(2,list.get(1));
+ResultSet rs = ps.executeQuery();
+There's probbaly a more elegeant solution to the problem but we have an application that queries the database for records using 
+the user's input to build the queries and it's been working fine for the last two years. Hope that helps.
