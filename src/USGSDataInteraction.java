@@ -163,7 +163,7 @@ class USGSDataController {
             case 1:
 				view.displayCount();
                 System.out.println("FACE");
-                int [] countArray = countLoop();
+                double [] countArray = countLoop();
 
 				break;
             //SEARCH
@@ -192,7 +192,67 @@ class USGSDataController {
 	}
 
 
-	private int[] countLoop(){
+	private double[] countLoop(){
+        Scanner input = new Scanner (System.in);
+        double [] tracker = new double[]{4,4,4,4};
+        boolean valueOrRange = false;
+        boolean numColumns = false;
+        double val = 4;
+        double searchValue;
+        double col = 4;
+        System.out.println("DOOKIE");
+        while(!valueOrRange && !numColumns){
+
+            if(!valueOrRange) {
+                try {
+                    System.out.println("Would you like to search on Value(1), Range(2) or Neither(0) ?");
+                    val = input.nextDouble();
+                } catch (InputMismatchException e) {
+                    input.next();
+                    System.out.println("Please Input either 1 2 or 0");
+                    continue;
+                }
+
+                if(val == 1 ){
+                    //get the value -- 1000 < value > -1000
+                    try {
+                        System.out.println("Please enter a value between -1000 and 1000");
+                        searchValue = input.nextDouble();
+                    } catch (InputMismatchException e) {
+                        input.next();
+                        System.out.println("Please Input either 1 2 or 0");
+                        continue;
+                    }
+                }else if(val == 2){
+                    //get
+                }else if(val == 3){
+
+                }else{
+                    System.out.println("Please Input either 1 2 or 0");
+                }
+                valueOrRange = true;
+            }
+
+            if(!numColumns){
+                try {
+                    System.out.println("Would you like to search on a Single Column(1), Several Columns(2) or Neither(0) ?");
+                    col = input.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.print("Please Input either 1 2 or 0");
+                    continue;
+                }
+                if(col == 1 || col == 2 || col == 0){
+                    numColumns = true;
+                    tracker[1] = col;
+                }
+            }
+
+        }
+        return tracker;
+
+    }
+
+    private int[] searchLoop(){
         Scanner input = new Scanner (System.in);
         int [] tracker = new int[]{4,4};
         boolean valueOrRange = false;
@@ -218,7 +278,52 @@ class USGSDataController {
                 }
             }
 
+            if(!numColumns){
+                try {
+                    System.out.println("Would you like to search on a Single Column(1), Several Columns(2) or Neither(0) ?");
+                    col = input.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.print("Please Input either 1 2 or 0");
+                    continue;
+                }
+                if(col == 1 || col == 2 || col == 0){
+                    numColumns = true;
+                    tracker[1] = col;
+                }
+            }
 
+        }
+        return tracker;
+
+
+
+    }
+
+    private int[] delLoop(){
+        Scanner input = new Scanner (System.in);
+        int [] tracker = new int[]{4,4};
+        boolean valueOrRange = false;
+        boolean numColumns = false;
+        int val = 4;
+        int col = 4;
+        System.out.println("DOOKIE");
+        while(!valueOrRange && !numColumns){
+
+            if(!valueOrRange) {
+                try {
+                    System.out.println("Would you like to search on Value(1), Range(2) or Neither(0) ?");
+                    val = input.nextInt();
+                } catch (InputMismatchException e) {
+                    input.next();
+                    System.out.println("Please Input either 1 2 or 0");
+                    continue;
+                }
+
+                if(val == 1 || val == 2 || val == 0){
+                    valueOrRange = true;
+                    tracker[0] = val;
+                }
+            }
 
             if(!numColumns){
                 try {
@@ -233,17 +338,10 @@ class USGSDataController {
                     tracker[1] = col;
                 }
             }
-            
+
         }
         return tracker;
 
-    }
-
-    private void searchLoop(){
-
-    }
-
-    private void delLoop(){
 
     }
 
