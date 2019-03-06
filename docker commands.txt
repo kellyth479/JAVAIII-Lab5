@@ -1,0 +1,30 @@
+docker pull microsoft/mssql-server-linux
+
+docker run -d --name sql_server_demo -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=reallyStrongPwd123" -p 1433:1433 microsoft/mssql-serverlinux
+
+
+###this one from the web worked -- https://hub.docker.com/r/microsoft/mssql-server-linux/
+docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -p 1433:1433 -d microsoft/mssql-server-linux:latest
+
+docker run -d --name sql_server_demo -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=reallyStrongPwd123' -p 1433:1433 microsoft/mssql-server-linux
+
+docker run -d -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=reallyStrongPwd123" -p 1433:1433 microsoft/mssql-serverlinux
+
+docker ps
+
+Start: docker start sql_server_demo
+Stop: docker stop sql_server_demo
+
+Remove: docker rm sql_server_demo
+
+
+
+docker pull microsoft/mssql-server-linux
+docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -p 1433:1433 -d microsoft/mssql-server-linux:latest
+Start: docker start eloquent_haslett
+Stop: docker stop eloquent_haslett
+
+aws:
+lqg.ctvfhnkxmc8q.us-east-2.rds.amazonaws.com
+LiquidGangsterSU
+
