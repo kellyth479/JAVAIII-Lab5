@@ -3,7 +3,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import static java.lang.System.exit;
 
 public class USGSDataInteraction {
 
@@ -80,16 +83,28 @@ class USGSDataView {
           menu.append("==================\n");
           System.out.println("		Menu		\n");
           System.out.println("==================\n");
-          System.out.println("1. Search data?\n");
+          System.out.println("1. Count any column\n");
           System.out.println("==================\n");
-          System.out.println("2. Delete data?\n");
+          System.out.println("2. Search data?\n");
           System.out.println("==================\n");
-          System.out.println("3. Count any column\n");
+          System.out.println("3. Delete data?\n");
           System.out.println("===================\n");
           System.out.println("4. Quit\n");
           System.out.println("==================\n");
 
           System.out.println(menu);
+    }
+
+    public void displayCount(){
+
+    }
+
+    public void displaySearch(){
+
+    }
+
+    public void displayDelete(){
+
     }
 
 
@@ -144,29 +159,96 @@ class USGSDataController {
 			input.nextLine();
 			
 			switch(choice) {
-			case 1:
-				System.out.println("what do you want to search?");
-				
+			//COUNT
+            case 1:
+				view.displayCount();
+                System.out.println("FACE");
+                int [] countArray = countLoop();
+
 				break;
-				
+            //SEARCH
 			case 2:
-				System.out.println("count");
-				
+				view.displaySearch();
+                searchLoop();
+
 				break;
-				
+            //DELETE
 			case 3:
-				System.out.println("which field you want to delete?");
+                view.displayDelete();
+                delLoop();
+
+
 				
 				break;
-				
-				default:
+            case 4:
+                System.out.println("Exiting program, good bye!");
+                exit(0);
+            default:
+                System.out.println("Invalid Choice");
 			}
-		}while(true);
+			System.out.print("Do you want to perform another action?[y/n] ");
+        }while(input.next().equals("y"));
 
-
-			
-			
 	}
+
+
+	private int[] countLoop(){
+        Scanner input = new Scanner (System.in);
+        int [] tracker = new int[]{4,4};
+        boolean valueOrRange = false;
+        boolean numColumns = false;
+        int val = 4;
+        int col = 4;
+        System.out.println("DOOKIE");
+        while(!valueOrRange && !numColumns){
+
+            if(!valueOrRange) {
+                try {
+                    System.out.println("Would you like to search on Value(1), Range(2) or Neither(0) ?");
+                    val = input.nextInt();
+                } catch (InputMismatchException e) {
+                    input.next();
+                    System.out.println("Please Input either 1 2 or 0");
+                    continue;
+                }
+
+                if(val == 1 || val == 2 || val == 0){
+                    valueOrRange = true;
+                    tracker[0] = val;
+                }
+            }
+
+
+
+            if(!numColumns){
+                try {
+                    System.out.println("Would you like to search on a Single Column(1), Several Columns(2) or Neither(0) ?");
+                    col = input.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.print("Please Input either 1 2 or 0");
+                    continue;
+                }
+                if(col == 1 || col == 2 || col == 0){
+                    numColumns = true;
+                    tracker[1] = col;
+                }
+            }
+            
+        }
+        return tracker;
+
+    }
+
+    private void searchLoop(){
+
+    }
+
+    private void delLoop(){
+
+    }
+
+
+
 }
 
 
