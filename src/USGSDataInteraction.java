@@ -79,21 +79,17 @@ class USGSDataView {
 	
     public void displayMenu(){
 
-        System.out.println("==================");
-        System.out.println("       Menu       ");
-        System.out.println("==================");
+        System.out.println("###################");
+        System.out.println("Select an Operation");
+        System.out.println("###################");
         System.out.println("1. Count any column");
-        System.out.println("==================");
+        System.out.println("###################");
         System.out.println("2. Search data?");
-        System.out.println("==================");
+        System.out.println("###################");
         System.out.println("3. Delete data?");
-        System.out.println("===================");
+        System.out.println("###################");
         System.out.println("4. Quit");
-        System.out.println("==================");
-
-//      StringBuilder menu = new StringBuilder();
-//      menu.append("==================");
-//      System.out.println(menu);
+        System.out.println("###################");
     }
 
 
@@ -120,6 +116,18 @@ class USGSDataView {
 
     }
 
+    public void beginningQuery(){
+        System.out.println("###############################################################################");
+        System.out.println("Beginning query building process:");
+        System.out.println("###############################################################################");
+        System.out.println("\n");
+    }
+
+    public void countQueryOutput(){
+        System.out.println("###############################################################################");
+        System.out.println("You are using the COUNT function, you may only select 1 column to count");
+        System.out.println("###############################################################################");
+    }
 
     public String handleRequest (String question) {
         System.out.println(question);
@@ -163,10 +171,8 @@ class USGSDataController {
 			switch(choice) {
 			//COUNT
             case 1:
-                solicitColumns("LATITUDE");
-                solicitColumns("LONGITUDE");
-                solicitColumns("DEPTH");
-                solicitColumns("MAG");
+                view.beginningQuery();
+                solicitColumns(1);
                 solicitValues("LATITUDE");
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
@@ -175,10 +181,8 @@ class USGSDataController {
 				break;
             //SEARCH
 			case 2:
-                solicitColumns("LATITUDE");
-                solicitColumns("LONGITUDE");
-                solicitColumns("DEPTH");
-                solicitColumns("MAG");
+                view.beginningQuery();
+                solicitColumns(0);
                 solicitValues("LATITUDE");
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
@@ -187,10 +191,8 @@ class USGSDataController {
 				break;
             //DELETE
 			case 3:
-                solicitColumns("LATITUDE");
-                solicitColumns("LONGITUDE");
-                solicitColumns("DEPTH");
-                solicitColumns("MAG");
+                view.beginningQuery();
+                solicitColumns( 0);
                 solicitValues("LATITUDE");
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
@@ -367,39 +369,45 @@ class USGSDataController {
 
     }
 
-    public void solicitColumns(String columnName){
+    public void solicitColumns(int count){
         Scanner input = new Scanner (System.in);
         int yesFlag = -1;
         double columndub = -201;
-        boolean resultColumns = false;
+        String [] columns = new String[]{"LATITUDE","LONGITUDE","DEPTH","MAG"};
 
-        System.out.println("###############################################################################");
-        System.out.println("Beginning query building process:");
-        System.out.println("###############################################################################");
-        System.out.println("\n");
+        if(count == 1){
+            //Inform user they can only select one column to perform the count operation on
+            view.countQueryOutput();
+        }
 
         //Columns to select
-        while(!resultColumns){
-            try {
-                System.out.println("Do you want to perform this operation on the column "+columnName+"?");
-                System.out.println("Enter 1 for Yes");
-                System.out.println("Enter 0 for No");
-                yesFlag = input.nextInt();
-            } catch (InputMismatchException e) {
-                input.next();
-                System.out.println("Type Mismatch - Please Input Either 1 or 0");
-                continue;
+
+            for(int i = 0;i<columns.length;i++){
+                try {
+                    System.out.println("Do you want to perform this operation on the column "+columns[i]+"?");
+                    System.out.println("Enter 1 for Yes");
+                    System.out.println("Enter 0 for No");
+                    yesFlag = input.nextInt();
+                } catch (InputMismatchException e) {
+                    input.next();
+                    System.out.println("Type Mismatch - Please Input Either 1 or 0");
+                    continue;
+                }
+                //User must enter 1 or 2 or 0
+                if(yesFlag > 1 || yesFlag < 0){
+                    System.out.println("You Must Input Either 1 or 0");
+                    continue;
+                }
+                //If user wants to search on columnName...
+                if(yesFlag == 1){
+                    column.put(columns[i], columndub);
+                    System.out.println("COLUMN HASHMAP:");
+                    column.forEach((key, value) -> System.out.println(key + ":" + value));
+                    //only one column may be selected to count on
+                    if(count == 1){
+                        break;
+                    }
             }
-            //User must enter 1 or 2 or 0
-            if(yesFlag > 1 || yesFlag < 0){
-                System.out.println("You Must Input Either 1 or 0");
-                continue;
-            }
-            //If user wants to search on columnName...
-            if(yesFlag == 1){
-                column.put(columnName, columndub);
-            }
-            resultColumns = true;
         }
     }
 
