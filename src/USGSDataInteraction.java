@@ -137,14 +137,22 @@ class USGSDataController {
     HashMap<String, Double[]> range = new HashMap<String, Double[]>();
     HashMap<String, Double> column = new HashMap<String, Double>();
 
+//    private class USGSHashMaps{
+//        private HashMap<String, Double> value = new HashMap<String, Double>();
+//        private HashMap<String, Double[]> range = new HashMap<String, Double[]>();
+//        private HashMap<String, Double> column = new HashMap<String, Double>();
+//    }
+
 	public USGSDataController(USGSDataModel model, USGSDataView view) {
 		this.model = model;
 		this.view = view;
-		
 	}
 	
 	public void inputLoop(){
 		Scanner input = new Scanner (System.in);
+//        USGSHashMaps queryHash = new USGSHashMaps();
+
+
 		do {
 			view.displayMenu();
 			//TODO Handle faulty input
@@ -155,6 +163,10 @@ class USGSDataController {
 			switch(choice) {
 			//COUNT
             case 1:
+                solicitColumns("LATITUDE");
+                solicitColumns("LONGITUDE");
+                solicitColumns("DEPTH");
+                solicitColumns("MAG");
                 solicitValues("LATITUDE");
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
@@ -163,6 +175,10 @@ class USGSDataController {
 				break;
             //SEARCH
 			case 2:
+                solicitColumns("LATITUDE");
+                solicitColumns("LONGITUDE");
+                solicitColumns("DEPTH");
+                solicitColumns("MAG");
                 solicitValues("LATITUDE");
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
@@ -171,6 +187,10 @@ class USGSDataController {
 				break;
             //DELETE
 			case 3:
+                solicitColumns("LATITUDE");
+                solicitColumns("LONGITUDE");
+                solicitColumns("DEPTH");
+                solicitColumns("MAG");
                 solicitValues("LATITUDE");
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
@@ -186,6 +206,9 @@ class USGSDataController {
 			range.clear();
 			value.clear();
 			column.clear();
+//            queryHash.range.clear();
+//            queryHash.value.clear();
+//            queryHash.column.clear();
 			System.out.print("Do you want to perform another action?[y/n] ");
         }while(input.next().equals("y"));
 	}
@@ -344,20 +367,49 @@ class USGSDataController {
 
     }
 
-
-    public void solicitValues(String columnName){
+    public void solicitColumns(String columnName){
         Scanner input = new Scanner (System.in);
         int yesFlag = -1;
-        int rangeOrValue = -1;
-        boolean complete = false;
-        double columndub = 0.0;
+        double columndub = -201;
+        boolean resultColumns = false;
 
         System.out.println("###############################################################################");
         System.out.println("Beginning query building process:");
         System.out.println("###############################################################################");
         System.out.println("\n");
 
-        //Interaction:
+        //Columns to select
+        while(!resultColumns){
+            try {
+                System.out.println("Do you want to perform this operation on the column "+columnName+"?");
+                System.out.println("Enter 1 for Yes");
+                System.out.println("Enter 0 for No");
+                yesFlag = input.nextInt();
+            } catch (InputMismatchException e) {
+                input.next();
+                System.out.println("Type Mismatch - Please Input Either 1 or 0");
+                continue;
+            }
+            //User must enter 1 or 2 or 0
+            if(yesFlag > 1 || yesFlag < 0){
+                System.out.println("You Must Input Either 1 or 0");
+                continue;
+            }
+            //If user wants to search on columnName...
+            if(yesFlag == 1){
+                column.put(columnName, columndub);
+            }
+            resultColumns = true;
+        }
+    }
+
+    public void solicitValues(String columnName){
+        Scanner input = new Scanner (System.in);
+        int yesFlag = -1;
+        int rangeOrValue = -1;
+        boolean complete = false;
+
+        //Columns to search on and values or ranges
         while(!complete) {
 
             try {
@@ -375,7 +427,7 @@ class USGSDataController {
                 System.out.println("You Must Input Either 1 or 0");
                 continue;
             }
-            //If user wants to search on Longitude...
+            //If user wants to search on columnName...
             if(yesFlag == 1){
                 try {
                     System.out.println("Do you want to search on a specific value(1) or a range of values(2) or neither (0)?(Enter 1 or 2 or 0)");
@@ -389,20 +441,20 @@ class USGSDataController {
                 if(rangeOrValue == 1){
                     double longInput = -1;
                     try {
-                        System.out.println("Please enter a value between -200 and 200");
+                        System.out.println("Please enter a value between -200 and 700");
                         longInput = input.nextDouble();
                     } catch (InputMismatchException e) {
                         input.next();
-                        System.out.println("You may only input a value between -200 and 200");
+                        System.out.println("You may only input a value between -200 and 700");
                         continue;
                     }
-                    if(-200 > longInput || longInput > 200){
-                        System.out.println("You may only input a value between -200 and 200");
+                    if(-200 > longInput || longInput > 700){
+                        System.out.println("You may only input a value between -200 and 700");
                         continue;
                     }
                     //Add user's value to the values hashmap
+//                    queryHash.value.put(columnName, longInput);
                     value.put(columnName, longInput);
-                    complete = true;
 
                     //If user wants to search between a range of values
                     }else if(rangeOrValue == 2 ){
@@ -410,36 +462,37 @@ class USGSDataController {
                     double rangeInput2 = -1;
                         //Get first value
                         try {
-                            System.out.println("Please enter a value between -200 and 200");
+                            System.out.println("Please enter a value between -200 and 700");
                             rangeInput1 = input.nextDouble();
                         } catch (InputMismatchException e) {
                             input.next();
-                            System.out.println("You may only input a value between -200 and 200");
+                            System.out.println("You may only input a value between -200 and 700");
                             continue;
                         }
-                        if(-200 > rangeInput1 || rangeInput1 > 200){
-                            System.out.println("You may only input a value between -200 and 200");
+                        if(-200 > rangeInput1 || rangeInput1 > 700){
+                            System.out.println("You may only input a value between -200 and 700");
                             continue;
                         }
                         //Get second value
                         try {
-                            System.out.println("Please enter a value between -200 and 200");
+                            System.out.println("Please enter a value between -200 and 700");
                             rangeInput2 = input.nextDouble();
                         } catch (InputMismatchException e) {
                             input.next();
-                            System.out.println("You may only input a value between -200 and 200");
+                            System.out.println("You may only input a value between -200 and 700");
                             continue;
                         }
-                        if(-200 > rangeInput2 || rangeInput2 > 200){
-                            System.out.println("You may only input a value between -200 and 200");
+                        if(-200 > rangeInput2 || rangeInput2 > 700){
+                            System.out.println("You may only input a value between -200 and 700");
                             continue;
                         }
                         Double[] longArray = new Double[]{rangeInput1,rangeInput2};
+//                        queryHash.range.put(columnName, longArray);
                         range.put(columnName, longArray);
-                        complete = true;
 
                     }else if(rangeOrValue == 0) {
-                        column.put(columnName, columndub);
+//                        queryHash.column.put(columnName, columndub);
+//                        column.put(columnName, columndub);
 
                     }else{
                         System.out.println("Please Input Either 1 or 2 or 0");
@@ -447,6 +500,10 @@ class USGSDataController {
                 }
 
             }
+
+
+
+
             System.out.println("VALUE HASHMAP:");
             value.forEach((key, value) -> System.out.println(key + ":" + value));
             System.out.println("RANGE HASHMAP:");
@@ -459,6 +516,8 @@ class USGSDataController {
 
 
     }
+
+
 
 
 
