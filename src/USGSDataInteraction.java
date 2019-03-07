@@ -135,7 +135,7 @@ class USGSDataController {
 	USGSDataView view;
     HashMap<String, Double> value = new HashMap<String, Double>();
     HashMap<String, Double[]> range = new HashMap<String, Double[]>();
-    HashMap<String, Double[]> column = new HashMap<String, Double[]>();
+    HashMap<String, Double> column = new HashMap<String, Double>();
 
 	public USGSDataController(USGSDataModel model, USGSDataView view) {
 		this.model = model;
@@ -350,26 +350,29 @@ class USGSDataController {
         int yesFlag = -1;
         int rangeOrValue = -1;
         boolean complete = false;
+        double columndub = 0.0;
 
         System.out.println("###############################################################################");
         System.out.println("Beginning query building process:");
         System.out.println("###############################################################################");
         System.out.println("\n");
 
-        //Longitude Interaction:
+        //Interaction:
         while(!complete) {
 
             try {
-                System.out.println("Do you want to search on "+columnName+"? Enter 0 for Yes Enter 1 for No");
+                System.out.println("Do you want to search on "+columnName+"?");
+                System.out.println("Enter 1 for Yes");
+                System.out.println("Enter 0 for No");
                 yesFlag = input.nextInt();
             } catch (InputMismatchException e) {
                 input.next();
-                System.out.println("Type Mismatch - Please Input Either 1 or 2 or 0");
+                System.out.println("Type Mismatch - Please Input Either 1 or 0");
                 continue;
             }
             //User must enter 1 or 2 or 0
-            if(yesFlag > 2 || yesFlag < 1){
-                System.out.println("You Must Input Either 1 or 2 or 0");
+            if(yesFlag > 1 || yesFlag < 0){
+                System.out.println("You Must Input Either 1 or 0");
                 continue;
             }
             //If user wants to search on Longitude...
@@ -436,6 +439,7 @@ class USGSDataController {
                         complete = true;
 
                     }else if(rangeOrValue == 0) {
+                        column.put(columnName, columndub);
 
                     }else{
                         System.out.println("Please Input Either 1 or 2 or 0");
@@ -449,6 +453,7 @@ class USGSDataController {
             range.forEach((key, value) -> System.out.println(key + ":" + value));
             System.out.println("COLUMN HASHMAP:");
             column.forEach((key, value) -> System.out.println(key + ":" + value));
+            complete = true;
         }
 
 
