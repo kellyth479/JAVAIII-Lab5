@@ -52,7 +52,7 @@ class USGSDataModel{
 			while (rs.next()) {
 				for (int i =1; i<=columnsNumber; i++) {
 					String columnValue= rs.getString(i);
-					str.append(rsmd.getColumnName(i) + "=" + columnValue);
+					str.append(rsmd.getColumnName(i) + "=" + columnValue + "\n");
 				}
 				str.append("");
 			}
@@ -124,6 +124,12 @@ class USGSDataView {
         System.out.println("You are using the COUNT function, you may only select 1 column to count");
         System.out.println("###############################################################################");
     }
+
+    public void deleteQueryOutput(){
+        System.out.println("###############################################################################");
+        System.out.println("You are using the DELETE function, will be deleting rows of data based on the Search values you enter next");
+        System.out.println("###############################################################################");
+    }
 }
 
 class USGSDataController {
@@ -187,7 +193,7 @@ class USGSDataController {
             //DELETE
 			case 3:
                 view.beginningQuery();
-                solicitColumns( 0);
+                solicitColumns( 2);
                 solicitValues("LATITUDE");
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
@@ -230,6 +236,11 @@ class USGSDataController {
         //Columns to select
 
             for(int i = 0;i<columns.length;i++){
+                if(count == 2){
+                    //Inform user that they will be deleting ALL rows of data based on terms they search in
+                    view.deleteQueryOutput();
+                    break;
+                }
                 try {
                     System.out.println("Do you want to perform this operation on the column "+columns[i]+"?");
                     System.out.println("Enter 1 for Yes");
@@ -430,12 +441,12 @@ class USGSDataController {
         //Build Operation line
         if(column.size() != 0){
             query.append("DELETE ");
-            for (String key : column.keySet()) {
-                query.append(key);
-                query.append(", ");
-//                System.out.println("Key: " + key + ", Value: " + column.get(key));
-            }
-            query = removeWhiteSpace(query, 5);
+//            for (String key : column.keySet()) {
+//                query.append(key);
+//                query.append(", ");
+////                System.out.println("Key: " + key + ", Value: " + column.get(key));
+//            }
+//            query = removeWhiteSpace(query, 5);
             query = buildGeneralQuery(query);
 
         }else{
@@ -449,7 +460,7 @@ class USGSDataController {
 
     public StringBuilder buildGeneralQuery(StringBuilder query){
         if(value.size() != 0 || range.size() != 0){
-            query.append(" FROM EARTHQUAKE_DATA EQ WHERE ");
+            query.append(" FROM EARTHQUAKE_DATA WHERE ");
         }else{
             query.append(" FROM EARTHQUAKE_DATA");
         }
