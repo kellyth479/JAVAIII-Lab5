@@ -25,7 +25,7 @@ public class USGSDataInteraction {
 
 
 class USGSDataModel{
-	
+
 		private String connectionUrl;
 		private USGSDatabase db;
 		private Connection conn;
@@ -41,18 +41,18 @@ class USGSDataModel{
     }
 
 	public StringBuffer showData(String sql) {
-		
+
 		ResultSet rs = db.showData(conn, sql);
 		StringBuffer str = new StringBuffer();
-		
+
 		try {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnsNumber = rsmd.getColumnCount();
-			
+
 			while (rs.next()) {
 				for (int i =1; i<=columnsNumber; i++) {
 					String columnValue= rs.getString(i);
-					str.append(rsmd.getColumnName(i) + "=" + columnValue);					
+					str.append(rsmd.getColumnName(i) + "=" + columnValue);
 				}
 				str.append("");
 			}
@@ -61,22 +61,22 @@ class USGSDataModel{
 		}
 		return str;
 	}
-	
+
 	public void deletedata(String sql) {
 		db.runSql(conn, sql);
 	}
-	
+
 	public void countData(String sql) {
 		db.runSql(conn, sql);
 	}
 
-}	
+}
 
 class USGSDataView {
 	public USGSDataView(){
-		
+
 	}
-	
+
     public void displayMenu(){
 
         System.out.println("###################");
@@ -123,7 +123,7 @@ class USGSDataController {
 		this.model = model;
 		this.view = view;
 	}
-	
+
 	public void inputLoop(){
 		Scanner input = new Scanner (System.in);
 //        USGSHashMaps queryHash = new USGSHashMaps();
@@ -135,7 +135,7 @@ class USGSDataController {
 			int choice = input.nextInt();
 			input.nextLine();
 
-			
+
 			switch(choice) {
 			//COUNT
             case 1:
@@ -145,7 +145,9 @@ class USGSDataController {
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
                 solicitValues("MAG");
-                buildCountQuery();
+                StringBuilder countQuery = buildCountQuery();
+                String execCountQuery = countQuery.toString();
+                model.showData(execCountQuery);
 				break;
             //SEARCH
 			case 2:
@@ -155,7 +157,9 @@ class USGSDataController {
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
                 solicitValues("MAG");
-                buildSearchQuery();
+                StringBuilder searchQuery = buildSearchQuery();
+                String execSearchQuery = searchQuery.toString();
+                model.showData(execSearchQuery);
 				break;
             //DELETE
 			case 3:
@@ -165,7 +169,9 @@ class USGSDataController {
                 solicitValues("LONGITUDE");
                 solicitValues("DEPTH");
                 solicitValues("MAG");
-                buildDeleteQuery();
+                StringBuilder deleteQuery = buildDeleteQuery();
+                String execDeleteQuery = deleteQuery.toString();
+                model.showData(execDeleteQuery);
 				break;
             case 4:
                 System.out.println("Exiting program, good bye!");
@@ -184,7 +190,9 @@ class USGSDataController {
         }while(input.next().equals("y"));
 	}
 
-
+    //asks the user which columns they want to search on.
+    //The "int count" argument indicates if we are building a query for the Count operation, which will only accept 1 column
+    //when "int count" == 1 we only allow the user to select 1 column to query on
     public void solicitColumns(int count){
         Scanner input = new Scanner (System.in);
         int yesFlag = -1;
@@ -230,6 +238,8 @@ class USGSDataController {
         }
     }
 
+    //asks the user if they want to qualify the search by limiting the values of columns they choose
+    //could be refactored to mirror the solicitColumns method using an array of the columns
     public void solicitValues(String columnName){
         Scanner input = new Scanner (System.in);
         int yesFlag = -1;
@@ -382,7 +392,8 @@ class USGSDataController {
             query = buildGeneralQuery(query);
 
         }else{
-            query.append("SELECT COUNT (*) FROM EARTHQUAKE EQ");
+            query.append("SELECT * ");
+            query = buildGeneralQuery(query);
         }
         query.append(";");
         System.out.println(query);
@@ -393,18 +404,41 @@ class USGSDataController {
 
         StringBuilder query = new StringBuilder();
 
+        //Build Operation line
+        if(column.size() != 0){
+            query.append("DELETE EQ.");
+            for (String key : column.keySet()) {
+                query.append(key);
+                query.append(", EQ.");
+//                System.out.println("Key: " + key + ", Value: " + column.get(key));
+            }
+            query = removeWhiteSpace(query, 5);
+            query = buildGeneralQuery(query);
+
+        }else{
+            query.append("DELETE * ");
+            query = buildGeneralQuery(query);
+        }
+        query.append(";");
+        System.out.println(query);
         return query;
     }
 
     public StringBuilder buildGeneralQuery(StringBuilder query){
+//            System.out.println("###################");
+//            System.out.println(query);
+//            System.out.println("###################");
 
 //            System.out.println("###################");
 //            System.out.println(query);
-//            System.out.println("###################");
-        query.append(" FROM EARTHQUAKE_DATA EQ WHERE EQ.");
-//            System.out.println("###################");
-//            System.out.println(query);
+        if(value.size() != 0 || range.size() != 0){
+            query.append(" FROM EARTHQUAKE_DATA EQ WHERE EQ.");
+        }else{
+            query.append(" FROM EARTHQUAKE_DATA EQ");
+        }
+
         if(value.size() != 0){
+//            query.append(" FROM EARTHQUAKE_DATA EQ WHERE EQ.");
             for (String key : value.keySet()) {
                 query.append(key);
                 query.append(" = ");
@@ -412,7 +446,7 @@ class USGSDataController {
                 query.append(" AND EQ.");
 //                System.out.println("Key: " + key + ", Value: " + value.get(key));
             }
-//            query = removeWhiteSpace(query, 8);
+            query = removeWhiteSpace(query, 8);
         }
 
         if(range.size() != 0){
@@ -430,7 +464,6 @@ class USGSDataController {
             }
             query = removeWhiteSpace(query, 8);
         }
-
 	    return query;
     }
 
