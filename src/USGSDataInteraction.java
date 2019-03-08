@@ -92,30 +92,6 @@ class USGSDataView {
         System.out.println("###################");
     }
 
-
-    public void displayData() {
-
-        StringBuffer showsql = new StringBuffer ("Select * from earthquake_data where ");
-        String latitude, longtitude, depth, mag;
-        latitude = handleRequest ("Please enter latitude: ");
-        if(!latitude.equals("")) {
-            showsql.append("latitude" + latitude);
-
-        }
-        longtitude = handleRequest("Please enter longtitude: ");
-        if(!longtitude.equals("") && (!latitude.equals(""))) {
-            showsql.append("");
-        }
-
-
-        String rlong = handleRequest("Please enter longitiude: ");
-        String rlati = handleRequest("please enter latitiude: ");
-        String rdepth = handleRequest("Please enter depth: ");
-        String rmag	= handleRequest("Please enter mag: ");
-
-
-    }
-
     public void beginningQuery(){
         System.out.println("###############################################################################");
         System.out.println("Beginning query building process:");
@@ -127,14 +103,6 @@ class USGSDataView {
         System.out.println("###############################################################################");
         System.out.println("You are using the COUNT function, you may only select 1 column to count");
         System.out.println("###############################################################################");
-    }
-
-    public String handleRequest (String question) {
-        System.out.println(question);
-        Scanner input = new Scanner (System.in);
-        String userInput = input.nextLine();
-        return userInput;
-
     }
 }
 
@@ -211,7 +179,8 @@ class USGSDataController {
 //            queryHash.range.clear();
 //            queryHash.value.clear();
 //            queryHash.column.clear();
-			System.out.print("Do you want to perform another action?[y/n] ");
+			System.out.print("Do you want to perform another action?");
+            System.out.print("'y' to continue, any other character to quit");
         }while(input.next().equals("y"));
 	}
 
@@ -532,27 +501,35 @@ class USGSDataController {
     public StringBuilder buildCountQuery(){
 
 	    StringBuilder query = new StringBuilder();
+
         //Build Operation line
 	    if(column.size() != 0){
-            System.out.println("###############################################################################");
-	        System.out.println("Returning distinct results, only possible when using count on multiple columns:");
-	        System.out.println("###############################################################################");
-	        query.append("SELECT COUNT (DISTINCT ");
+	        query.append("SELECT COUNT (EQ.");
+            for (String key : column.keySet()) {
+                query.append(key);
+//                System.out.println("Key: " + key + ", Value: " + column.get(key));
+            }
+//            System.out.println("###################");
+//            System.out.println(query);
+//            System.out.println("###################");
+            query.append(") FROM EARTHQUAKE_DATA EQ WHERE EQ.");
+//            System.out.println("###################");
+//            System.out.println(query);
+            if(value.size() != 0){
+                for (String key : value.keySet()) {
+                    query.append(key);
+                    query.append(" = ");
+                    query.append(value.get(key));
+                    query.append(" AND EQ.");
+//                System.out.println("Key: " + key + ", Value: " + value.get(key));
+                }
+                query = removeWhiteSpace(query);
+            }
 	    }else{
-	        query.append("SELECT COUNT (*)\n");
+	        query.append("SELECT COUNT (*) FROM EARTHQUAKE EQ");
 	    }
-        //Append column names to search
-//        (Map.Entry<String, Object> entry : map.entrySet()) {
-//            String key = entry.getKey();
-//            Object value = entry.getValue();
-//        }
-
-        //Append Where Clause
-//        (Map.Entry<String, Object> entry : map.entrySet()) {
-//            String key = entry.getKey();
-//            Object value = entry.getValue();
-//        }
-
+        query.append(";");
+        System.out.println(query);
 	    return query;
     }
 
@@ -568,6 +545,15 @@ class USGSDataController {
         StringBuilder query = new StringBuilder();
 
         return query;
+    }
+
+    public StringBuilder removeWhiteSpace(StringBuilder str){
+
+	    for(int i = 0;i<8;i++){
+            str.deleteCharAt(str.length()-1);
+        }
+        return str;
+
     }
 
 
