@@ -179,164 +179,11 @@ class USGSDataController {
 //            queryHash.range.clear();
 //            queryHash.value.clear();
 //            queryHash.column.clear();
-			System.out.print("Do you want to perform another action?");
-            System.out.print("'y' to continue, any other character to quit");
+			System.out.println("Do you want to perform another action?");
+            System.out.println("'y' to continue, any other character to quit");
         }while(input.next().equals("y"));
 	}
 
-
-	private double[] countLoop(){
-        Scanner input = new Scanner (System.in);
-        double [] tracker = new double[]{4,4,4,4};
-        boolean valueOrRange = false;
-        boolean numColumns = false;
-        double val = 4;
-        double searchValue;
-        double col = 4;
-        System.out.println("DOOKIE");
-        while(!valueOrRange && !numColumns){
-
-            if(!valueOrRange) {
-                try {
-                    System.out.println("Would you like to search on Value(1), Range(2) or Neither(0) ?");
-                    val = input.nextDouble();
-                } catch (InputMismatchException e) {
-                    input.next();
-                    System.out.println("Please Input either 1 2 or 0");
-                    continue;
-                }
-
-                if(val == 1 ){
-                    //get the value -- 1000 < value > -1000
-                    try {
-                        System.out.println("Please enter a value between -1000 and 1000");
-                        searchValue = input.nextDouble();
-                    } catch (InputMismatchException e) {
-                        input.next();
-                        System.out.println("Please Input either 1 2 or 0");
-                        continue;
-                    }
-                }else if(val == 2){
-                    //get
-                }else if(val == 3){
-
-                }else{
-                    System.out.println("Please Input either 1 2 or 0");
-                }
-                valueOrRange = true;
-            }
-
-            if(!numColumns){
-                try {
-                    System.out.println("Would you like to search on a Single Column(1), Several Columns(2) or Neither(0) ?");
-                    col = input.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.print("Please Input either 1 2 or 0");
-                    continue;
-                }
-                if(col == 1 || col == 2 || col == 0){
-                    numColumns = true;
-                    tracker[1] = col;
-                }
-            }
-
-        }
-        return tracker;
-
-    }
-
-    private int[] searchLoop(){
-        Scanner input = new Scanner (System.in);
-        int [] tracker = new int[]{4,4};
-        boolean valueOrRange = false;
-        boolean numColumns = false;
-        int val = 4;
-        int col = 4;
-        System.out.println("DOOKIE");
-        while(!valueOrRange && !numColumns){
-
-            if(!valueOrRange) {
-                try {
-                    System.out.println("Would you like to search on Value(1), Range(2) or Neither(0) ?");
-                    val = input.nextInt();
-                } catch (InputMismatchException e) {
-                    input.next();
-                    System.out.println("Please Input either 1 2 or 0");
-                    continue;
-                }
-
-                if(val == 1 || val == 2 || val == 0){
-                    valueOrRange = true;
-                    tracker[0] = val;
-                }
-            }
-
-            if(!numColumns){
-                try {
-                    System.out.println("Would you like to search on a Single Column(1), Several Columns(2) or Neither(0) ?");
-                    col = input.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.print("Please Input either 1 2 or 0");
-                    continue;
-                }
-                if(col == 1 || col == 2 || col == 0){
-                    numColumns = true;
-                    tracker[1] = col;
-                }
-            }
-
-        }
-        return tracker;
-
-
-
-    }
-
-    private int[] delLoop(){
-        Scanner input = new Scanner (System.in);
-        int [] tracker = new int[]{4,4};
-        boolean valueOrRange = false;
-        boolean numColumns = false;
-        int val = 4;
-        int col = 4;
-        System.out.println("DOOKIE");
-        while(!valueOrRange && !numColumns){
-
-            if(!valueOrRange) {
-                try {
-                    System.out.println("Would you like to search on Value(1), Range(2) or Neither(0) ?");
-                    val = input.nextInt();
-                } catch (InputMismatchException e) {
-                    input.next();
-                    System.out.println("Please Input either 1 2 or 0");
-                    continue;
-                }
-
-                if(val == 1 || val == 2 || val == 0){
-                    valueOrRange = true;
-                    tracker[0] = val;
-                }
-            }
-
-            if(!numColumns){
-                try {
-                    System.out.println("Would you like to search on a Single Column(1), Several Columns(2) or Neither(0) ?");
-                    col = input.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.print("Please Input either 1 2 or 0");
-                    continue;
-                }
-                if(col == 1 || col == 2 || col == 0){
-                    numColumns = true;
-                    tracker[1] = col;
-                }
-            }
-
-        }
-        return tracker;
-
-
-    }
 
     public void solicitColumns(int count){
         Scanner input = new Scanner (System.in);
@@ -356,6 +203,7 @@ class USGSDataController {
                     System.out.println("Do you want to perform this operation on the column "+columns[i]+"?");
                     System.out.println("Enter 1 for Yes");
                     System.out.println("Enter 0 for No");
+                    System.out.println(i);
                     yesFlag = input.nextInt();
                 } catch (InputMismatchException e) {
                     input.next();
@@ -365,13 +213,15 @@ class USGSDataController {
                 //User must enter 1 or 2 or 0
                 if(yesFlag > 1 || yesFlag < 0){
                     System.out.println("You Must Input Either 1 or 0");
+                    i = i-1;
+                    System.out.println(i);
                     continue;
                 }
                 //If user wants to search on columnName...
                 if(yesFlag == 1){
                     column.put(columns[i], columndub);
-                    System.out.println("COLUMN HASHMAP:");
-                    column.forEach((key, value) -> System.out.println(key + ":" + value));
+//                    System.out.println("COLUMN HASHMAP:");
+//                    column.forEach((key, value) -> System.out.println(key + ":" + value));
                     //only one column may be selected to count on
                     if(count == 1){
                         break;
@@ -494,10 +344,6 @@ class USGSDataController {
 
     }
 
-
-
-
-
     public StringBuilder buildCountQuery(){
 
 	    StringBuilder query = new StringBuilder();
@@ -509,22 +355,9 @@ class USGSDataController {
                 query.append(key);
 //                System.out.println("Key: " + key + ", Value: " + column.get(key));
             }
-//            System.out.println("###################");
-//            System.out.println(query);
-//            System.out.println("###################");
-            query.append(") FROM EARTHQUAKE_DATA EQ WHERE EQ.");
-//            System.out.println("###################");
-//            System.out.println(query);
-            if(value.size() != 0){
-                for (String key : value.keySet()) {
-                    query.append(key);
-                    query.append(" = ");
-                    query.append(value.get(key));
-                    query.append(" AND EQ.");
-//                System.out.println("Key: " + key + ", Value: " + value.get(key));
-                }
-                query = removeWhiteSpace(query);
-            }
+            query.append(")");
+	        query = buildGeneralQuery(query);
+
 	    }else{
 	        query.append("SELECT COUNT (*) FROM EARTHQUAKE EQ");
 	    }
@@ -537,6 +370,22 @@ class USGSDataController {
 
         StringBuilder query = new StringBuilder();
 
+        //Build Operation line
+        if(column.size() != 0){
+            query.append("SELECT EQ.");
+            for (String key : column.keySet()) {
+                query.append(key);
+                query.append(", EQ.");
+//                System.out.println("Key: " + key + ", Value: " + column.get(key));
+            }
+            query = removeWhiteSpace(query, 5);
+            query = buildGeneralQuery(query);
+
+        }else{
+            query.append("SELECT COUNT (*) FROM EARTHQUAKE EQ");
+        }
+        query.append(";");
+        System.out.println(query);
         return query;
     }
 
@@ -547,9 +396,48 @@ class USGSDataController {
         return query;
     }
 
-    public StringBuilder removeWhiteSpace(StringBuilder str){
+    public StringBuilder buildGeneralQuery(StringBuilder query){
 
-	    for(int i = 0;i<8;i++){
+//            System.out.println("###################");
+//            System.out.println(query);
+//            System.out.println("###################");
+        query.append(" FROM EARTHQUAKE_DATA EQ WHERE EQ.");
+//            System.out.println("###################");
+//            System.out.println(query);
+        if(value.size() != 0){
+            for (String key : value.keySet()) {
+                query.append(key);
+                query.append(" = ");
+                query.append(value.get(key));
+                query.append(" AND EQ.");
+//                System.out.println("Key: " + key + ", Value: " + value.get(key));
+            }
+//            query = removeWhiteSpace(query, 8);
+        }
+
+        if(range.size() != 0){
+            for (String key : range.keySet()) {
+                Double[] dubArray = new Double[2];
+                query.append(key);
+                query.append(" BETWEEN ");
+                dubArray = range.get(key);
+                query.append(dubArray[0].toString());
+                query.append(" AND ");
+                query.append(dubArray[1].toString());
+//                query.append(range.get(key));
+                query.append(" AND EQ.");
+//                System.out.println("Key: " + key + ", Value: " + value.get(key));
+            }
+            query = removeWhiteSpace(query, 8);
+        }
+
+	    return query;
+    }
+
+
+    public StringBuilder removeWhiteSpace(StringBuilder str, int count){
+
+	    for(int i = 0;i<count;i++){
             str.deleteCharAt(str.length()-1);
         }
         return str;
