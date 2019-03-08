@@ -62,9 +62,13 @@ class USGSDataModel{
 		return str;
 	}
 
-	public void deletedata(String sql) {
-		db.runSql(conn, sql);
-	}
+//	public void deletedata(String sql) {
+//		db.runSql(conn, sql);
+//	}
+
+    public void deletedata(String sql) {
+        db.runSql(conn, sql);
+    }
 
 //	public void countData(String sql) {
 //		db.runSql(conn, sql);
@@ -192,6 +196,7 @@ class USGSDataController {
 				break;
             //DELETE
 			case 3:
+			    //end program after deleting the whole table?
                 view.beginningQuery();
                 solicitColumns( 2);
                 solicitValues("LATITUDE");
@@ -201,6 +206,7 @@ class USGSDataController {
                 StringBuilder deleteQuery = buildDeleteQuery();
                 String execDeleteQuery = deleteQuery.toString();
                 model.deletedata(execDeleteQuery);
+                System.out.println("Rows deleted, perform select for verification");
 				break;
             case 4:
                 System.out.println("Exiting program, good bye!");
