@@ -4,12 +4,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class USGSDatabase {
-	
+
+
+
 	public Connection getConnection (String url) {
 		Connection conn = null;
-		
-		try { 
-			
+
+//        try {
+//            Class.forName("com.mysql.jdbc.Driver");
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+		try {
+
 			conn= DriverManager.getConnection(url);
 			
 		}catch (SQLException e){

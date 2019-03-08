@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.sql.DriverManager;
 
 import static java.lang.System.exit;
 
@@ -211,7 +212,6 @@ class USGSDataController {
                     System.out.println("Do you want to perform this operation on the column "+columns[i]+"?");
                     System.out.println("Enter 1 for Yes");
                     System.out.println("Enter 0 for No");
-                    System.out.println(i);
                     yesFlag = input.nextInt();
                 } catch (InputMismatchException e) {
                     input.next();
@@ -222,7 +222,7 @@ class USGSDataController {
                 if(yesFlag > 1 || yesFlag < 0){
                     System.out.println("You Must Input Either 1 or 0");
                     i = i-1;
-                    System.out.println(i);
+//                    System.out.println(i);
                     continue;
                 }
                 //If user wants to search on columnName...
@@ -341,12 +341,12 @@ class USGSDataController {
 
 
 
-            System.out.println("VALUE HASHMAP:");
-            value.forEach((key, value) -> System.out.println(key + ":" + value));
-            System.out.println("RANGE HASHMAP:");
-            range.forEach((key, value) -> System.out.println(key + ":" + value));
-            System.out.println("COLUMN HASHMAP:");
-            column.forEach((key, value) -> System.out.println(key + ":" + value));
+//            System.out.println("VALUE HASHMAP:");
+//            value.forEach((key, value) -> System.out.println(key + ":" + value));
+//            System.out.println("RANGE HASHMAP:");
+//            range.forEach((key, value) -> System.out.println(key + ":" + value));
+//            System.out.println("COLUMN HASHMAP:");
+//            column.forEach((key, value) -> System.out.println(key + ":" + value));
             complete = true;
         }
 
@@ -360,7 +360,7 @@ class USGSDataController {
 
         //Build Operation line
 	    if(column.size() != 0){
-	        query.append("SELECT COUNT (EQ.");
+	        query.append("SELECT COUNT (");
             for (String key : column.keySet()) {
                 query.append(key);
 //                System.out.println("Key: " + key + ", Value: " + column.get(key));
@@ -369,7 +369,7 @@ class USGSDataController {
 	        query = buildGeneralQuery(query);
 
 	    }else{
-	        query.append("SELECT COUNT (*) FROM EARTHQUAKE EQ");
+	        query.append("SELECT COUNT (*) FROM EARTHQUAKE ");
 	    }
         query.append(";");
         System.out.println(query);
@@ -382,10 +382,10 @@ class USGSDataController {
 
         //Build Operation line
         if(column.size() != 0){
-            query.append("SELECT EQ.");
+            query.append("SELECT ");
             for (String key : column.keySet()) {
                 query.append(key);
-                query.append(", EQ.");
+                query.append(", ");
 //                System.out.println("Key: " + key + ", Value: " + column.get(key));
             }
             query = removeWhiteSpace(query, 5);
@@ -406,17 +406,17 @@ class USGSDataController {
 
         //Build Operation line
         if(column.size() != 0){
-            query.append("DELETE EQ.");
+            query.append("DELETE ");
             for (String key : column.keySet()) {
                 query.append(key);
-                query.append(", EQ.");
+                query.append(", ");
 //                System.out.println("Key: " + key + ", Value: " + column.get(key));
             }
             query = removeWhiteSpace(query, 5);
             query = buildGeneralQuery(query);
 
         }else{
-            query.append("DELETE * ");
+            query.append("DELETE ");
             query = buildGeneralQuery(query);
         }
         query.append(";");
@@ -432,9 +432,9 @@ class USGSDataController {
 //            System.out.println("###################");
 //            System.out.println(query);
         if(value.size() != 0 || range.size() != 0){
-            query.append(" FROM EARTHQUAKE_DATA EQ WHERE EQ.");
+            query.append(" FROM EARTHQUAKE_DATA EQ WHERE ");
         }else{
-            query.append(" FROM EARTHQUAKE_DATA EQ");
+            query.append(" FROM EARTHQUAKE_DATA");
         }
 
         if(value.size() != 0){
@@ -443,7 +443,7 @@ class USGSDataController {
                 query.append(key);
                 query.append(" = ");
                 query.append(value.get(key));
-                query.append(" AND EQ.");
+                query.append(" AND ");
 //                System.out.println("Key: " + key + ", Value: " + value.get(key));
             }
             query = removeWhiteSpace(query, 8);
@@ -459,7 +459,7 @@ class USGSDataController {
                 query.append(" AND ");
                 query.append(dubArray[1].toString());
 //                query.append(range.get(key));
-                query.append(" AND EQ.");
+                query.append(" AND ");
 //                System.out.println("Key: " + key + ", Value: " + value.get(key));
             }
             query = removeWhiteSpace(query, 8);
