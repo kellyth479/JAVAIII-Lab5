@@ -37,7 +37,9 @@ public class USGSDatabase {
 		try {
 			java.sql.Statement stmt;
 			stmt=conn.createStatement();
-			System.out.println(sql);
+			System.out.println("##################");
+			System.out.print(sql+" Count Returned from DB ");
+
 			rs=stmt.executeQuery(sql);
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -52,7 +54,7 @@ public class USGSDatabase {
 	public int runSql (Connection conn, String sql) {
 		
 		try {
-			System.out.println("Running Sql" + sql);
+			System.out.println("Running Sql: " + sql);
 			java.sql.Statement stmt= conn.createStatement();
 			
 			return stmt.executeUpdate(sql);

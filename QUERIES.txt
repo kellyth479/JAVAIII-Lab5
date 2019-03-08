@@ -1,3 +1,13 @@
+            for (String key : value.keySet()) {
+                query.append(key);
+                query.append(" = ");
+                query.append(value.get(key));
+                query.append(" AND ");
+//                System.out.println("Key: " + key + ", Value: " + value.get(key));
+            }
+
+
+
 **WORKS
 SELECT COUNT(*)
 FROM EARTHQUAKE_DATA EQ
@@ -15,6 +25,9 @@ FROM EARTHQUAKE_DATA EQ
 WHERE EQ.LATITUDE BETWEEN 0.297 AND 39
 AND EQ.LONGITUDE BETWEEN 152 AND 178
 AND EQ.DEPTH = 10;
+
+SELECT (COLUMNSHASH) FROM 
+
 
 WE CAN WRITE VERY FEW QUERIES
 COUNT(*), *, COLUMN NAMES (AND DELETE?) CAN ALL BE REPRESENTED BY THE SAME

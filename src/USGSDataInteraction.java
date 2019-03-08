@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.sql.DriverManager;
 
 import static java.lang.System.exit;
 
@@ -67,10 +66,30 @@ class USGSDataModel{
 		db.runSql(conn, sql);
 	}
 
-	public void countData(String sql) {
-		db.runSql(conn, sql);
-	}
+//	public void countData(String sql) {
+//		db.runSql(conn, sql);
+//	}
+    public StringBuffer countData(String sql) {
 
+        ResultSet rs = db.showData(conn, sql);
+        StringBuffer str = new StringBuffer();
+
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+
+            while (rs.next()) {
+                for (int i =1; i<=columnsNumber; i++) {
+                    String columnValue= rs.getString(i);
+                    str.append(rsmd.getColumnName(i) + "=" + columnValue);
+                }
+                str.append("");
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
 }
 
 class USGSDataView {
@@ -148,7 +167,9 @@ class USGSDataController {
                 solicitValues("MAG");
                 StringBuilder countQuery = buildCountQuery();
                 String execCountQuery = countQuery.toString();
-                model.showData(execCountQuery);
+                StringBuffer countResult = model.countData(execCountQuery);
+                System.out.println(countResult);
+                System.out.println("##################");
 				break;
             //SEARCH
 			case 2:
@@ -160,7 +181,8 @@ class USGSDataController {
                 solicitValues("MAG");
                 StringBuilder searchQuery = buildSearchQuery();
                 String execSearchQuery = searchQuery.toString();
-                model.showData(execSearchQuery);
+                StringBuffer searchResult = model.showData(execSearchQuery);
+                System.out.println(searchResult);
 				break;
             //DELETE
 			case 3:
@@ -172,7 +194,7 @@ class USGSDataController {
                 solicitValues("MAG");
                 StringBuilder deleteQuery = buildDeleteQuery();
                 String execDeleteQuery = deleteQuery.toString();
-                model.showData(execDeleteQuery);
+                model.deletedata(execDeleteQuery);
 				break;
             case 4:
                 System.out.println("Exiting program, good bye!");
@@ -237,7 +259,6 @@ class USGSDataController {
             }
         }
     }
-
     //asks the user if they want to qualify the search by limiting the values of columns they choose
     //could be refactored to mirror the solicitColumns method using an array of the columns
     public void solicitValues(String columnName){
@@ -267,7 +288,7 @@ class USGSDataController {
             //If user wants to search on columnName...
             if(yesFlag == 1){
                 try {
-                    System.out.println("Do you want to search on a specific value(1) or a range of values(2) or neither (0)?(Enter 1 or 2 or 0)");
+                    System.out.println("Do you want to search on a specific value(1) or a range of values(0)?(Enter 1 or 0)");
                     rangeOrValue = input.nextInt();
                 } catch (InputMismatchException e) {
                     input.next();
@@ -294,7 +315,7 @@ class USGSDataController {
                     value.put(columnName, longInput);
 
                     //If user wants to search between a range of values
-                    }else if(rangeOrValue == 2 ){
+                    }else if(rangeOrValue == 0 ){
                     double rangeInput1 = -1;
                     double rangeInput2 = -1;
                         //Get first value
@@ -332,7 +353,7 @@ class USGSDataController {
 //                        column.put(columnName, columndub);
 
                     }else{
-                        System.out.println("Please Input Either 1 or 2 or 0");
+                        System.out.println("Please Input Either 1 or 0");
                         continue;
                 }
 
@@ -386,9 +407,11 @@ class USGSDataController {
             for (String key : column.keySet()) {
                 query.append(key);
                 query.append(", ");
-//                System.out.println("Key: " + key + ", Value: " + column.get(key));
             }
-            query = removeWhiteSpace(query, 5);
+            System.out.println("##########");
+            System.out.println(query);
+            System.out.println("##########");
+            query = removeWhiteSpace(query, 2);
             query = buildGeneralQuery(query);
 
         }else{
@@ -425,12 +448,6 @@ class USGSDataController {
     }
 
     public StringBuilder buildGeneralQuery(StringBuilder query){
-//            System.out.println("###################");
-//            System.out.println(query);
-//            System.out.println("###################");
-
-//            System.out.println("###################");
-//            System.out.println(query);
         if(value.size() != 0 || range.size() != 0){
             query.append(" FROM EARTHQUAKE_DATA EQ WHERE ");
         }else{
@@ -438,15 +455,13 @@ class USGSDataController {
         }
 
         if(value.size() != 0){
-//            query.append(" FROM EARTHQUAKE_DATA EQ WHERE EQ.");
             for (String key : value.keySet()) {
                 query.append(key);
                 query.append(" = ");
                 query.append(value.get(key));
                 query.append(" AND ");
-//                System.out.println("Key: " + key + ", Value: " + value.get(key));
             }
-            query = removeWhiteSpace(query, 8);
+            query = removeWhiteSpace(query, 7);
         }
 
         if(range.size() != 0){
@@ -458,15 +473,12 @@ class USGSDataController {
                 query.append(dubArray[0].toString());
                 query.append(" AND ");
                 query.append(dubArray[1].toString());
-//                query.append(range.get(key));
                 query.append(" AND ");
-//                System.out.println("Key: " + key + ", Value: " + value.get(key));
             }
-            query = removeWhiteSpace(query, 8);
+            query = removeWhiteSpace(query, 7);
         }
 	    return query;
     }
-
 
     public StringBuilder removeWhiteSpace(StringBuilder str, int count){
 
@@ -476,7 +488,6 @@ class USGSDataController {
         return str;
 
     }
-
 
 }
 
